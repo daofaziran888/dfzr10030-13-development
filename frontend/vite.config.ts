@@ -20,7 +20,10 @@ export default defineConfig({
     open: false,
     strictPort: false,
     proxy: {
-      '/api': {
+      // 用正则把匹配收窄到真正的 /api/ 接口：单纯前缀 '/api' 会误伤前端路由
+      // '/apiclient'（它以 '/api' 四个字符开头），导致页面导航被代理到后端拿到 404。
+      // '^/api(/|$)' 只匹配 /api、/api/... ，不再命中 /apiclient。
+      '^/api(/|$)': {
         target: proxyTarget,
         changeOrigin: true,
       },
